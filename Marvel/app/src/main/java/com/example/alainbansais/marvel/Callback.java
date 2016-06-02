@@ -5,6 +5,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -22,7 +26,7 @@ public class Callback extends AsyncTask<Void, Void, String> {
     private String API_KEY = "e3abbc2f4d802fb69bc83f77a5463870";
     private String HASH = "24807b3e495349dd682c2171df9bd96c";
 
-    public Callback(MainActivity currentContext){
+    public Callback(MainActivity currentContext) {
         context = currentContext;
     }
 
@@ -60,12 +64,19 @@ public class Callback extends AsyncTask<Void, Void, String> {
 
     @SuppressWarnings("ConstantConditions")
     protected void onPostExecute(String response) {
-        if(response == null) {
+        if (response == null) {
             response = "THERE WAS AN ERROR";
         }
         context.findViewById(progressBar).setVisibility(GONE);
         TextView test = (TextView) context.findViewById(responseView);
-        test.setText(response);
+        try {
+            JSONObject testJson = new JSONObject(response);
+            //JSONObject yeah = testJson.getJSONObject(0);
+            //String code = yeah.getString("code");
+            test.setText(response);
+           } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
