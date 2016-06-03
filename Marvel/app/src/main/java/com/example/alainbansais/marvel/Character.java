@@ -1,27 +1,29 @@
 package com.example.alainbansais.marvel;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Character {
     private String id;
-    private String name;
+    private String nickname;
     private String description;
     private String pathImg;
 
-    public Character() {
-        super();
-        this.id = "";
-        this.name = "";
-        this.description = "";
-        this.pathImg = "";
-
-    }
-
-    public Character(String id, String name, String description, String pathImg) {
+    @JsonCreator
+    public Character(
+            @JsonProperty("id") String id,
+            @JsonProperty("name") String nickname,
+            @JsonProperty("description") String description,
+            @JsonProperty("thumbnail") String pathImg
+    ) {
         super();
         this.id = id;
-        this.name = name;
+        this.nickname = nickname;
         this.description = description;
         this.pathImg = pathImg;
     }
@@ -34,12 +36,12 @@ public class Character {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getDescription() {
