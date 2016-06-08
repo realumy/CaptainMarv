@@ -5,16 +5,12 @@ import android.widget.TextView;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -27,7 +23,7 @@ public class Callback extends AsyncTask<Void, Void, String> {
     private String HASH = "24807b3e495349dd682c2171df9bd96c";
     private URL url;
     private HttpURLConnection urlConnection;
-    private ArrayList<Character> characters;
+    private ArrayList<Character> characters = new ArrayList<>();
 
     public Callback(MainActivity currentContext) {
         context = currentContext;
@@ -49,41 +45,24 @@ public class Callback extends AsyncTask<Void, Void, String> {
 
             ObjectMapper mapper;
             mapper = new ObjectMapper();
-            mapper.configure(SerializationConfig.Feature.AUTO_DETECT_FIELDS, true);
-            JsonNode stateRequest = null;
+            JsonNode stateRequest;
 
             stateRequest = mapper.readTree(urlConnection.getInputStream());
             JsonNode data = stateRequest.get("data");
             JsonNode results = data.get("results");
 
-
             Iterator<JsonNode> iterator = results.getElements();
 
             while (iterator.hasNext()) {
                 JsonNode character = iterator.next();
-                characters = mapper.readValue(character, new TypeReference<List<Character>>() {});
-
+                characters.add(mapper.readValue(character,Character.class));
             }
-
             return null;
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             urlConnection.disconnect();
         }
-                    /*List<Character> characters = mapper.readValue(results,
-                                                                  new TypeReference<List<Character>>() {});
-
-
-                    for (final Character character : characters) {
-                        Log.d("TEST", character.getId());
-                        Log.d("TEST", character.getName());
-                        Log.d("TEST", character.getDescription());
-                        Log.d("TEST", character.getPathImg());
-                    }*/
-
-
         return null;
     }
 

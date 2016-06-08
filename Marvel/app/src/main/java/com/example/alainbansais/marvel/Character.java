@@ -12,20 +12,18 @@ public class Character {
     private String id;
     private String nickname;
     private String description;
-    private String pathImg;
 
     @JsonCreator
     public Character(
             @JsonProperty("id") String id,
             @JsonProperty("name") String nickname,
-            @JsonProperty("description") String description,
-            @JsonProperty("thumbnail") String pathImg
+            @JsonProperty("description") String description
+
     ) {
         super();
         this.id = id;
         this.nickname = nickname;
         this.description = description;
-        this.pathImg = pathImg;
     }
 
     public String getId() {
@@ -50,13 +48,5 @@ public class Character {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getPathImg() {
-        return pathImg;
-    }
-
-    public void setPathImg(String pathImg) {
-        this.pathImg = pathImg;
     }
 }
