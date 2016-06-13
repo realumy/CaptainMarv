@@ -16,7 +16,7 @@ public class CharacterDeserializationTest {
     @Test
     public void deserializeOneElement_shouldReturnOneCharacter() throws IOException {
         // Given
-        final String json = "{\"id\":1011334,\"name\":\"3-D Man\",\"description\":\"\",\"modified\":\"2014-04-29T14:18:17-0400\",\"thumbnail\":\"jpg\"}";
+        final String json = "{\"id\":1011334,\"name\":\"3-D Man\",\"description\":\"\",\"modified\":\"2014-04-29T14:18:17-0400\"}";
         ObjectMapper mapper;
         mapper = new ObjectMapper();
 
@@ -75,5 +75,4 @@ public class CharacterDeserializationTest {
         assertNotNull(characters);
         assertEquals("Mars",characters.get(2).getNickname());
     }
-
 }

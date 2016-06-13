@@ -1,7 +1,8 @@
 package com.example.alainbansais.marvel;
 
 import android.os.AsyncTask;
-import android.widget.TextView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -15,7 +16,9 @@ import java.util.Iterator;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class Callback extends AsyncTask<Void, Void, String> {
+public class Callback extends AsyncTask<Void, Void, Integer> {
+    private RecyclerView myRecyclerView;
+    private RecyclerView.Adapter myAdapter;
     protected MainActivity context;
     private String API_URL = "http://gateway.marvel.com/v1/public/characters?";
     private String TIME_STAMP = "1";
@@ -34,49 +37,57 @@ public class Callback extends AsyncTask<Void, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
         context.findViewById(R.id.progressBar).setVisibility(VISIBLE);
+        myRecyclerView = (RecyclerView) context.findViewById(R.id.my_recycler_view);
+        myRecyclerView.setHasFixedSize(true);
+        myRecyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
     @Override
-    protected String doInBackground(Void... params) {
-
+    protected Integer doInBackground(Void... params) {
+        Integer result = 0;
         try {
-            url = new URL(API_URL + "ts=" + TIME_STAMP + "&apikey=" + API_KEY + "&hash=" + HASH);
+            url = new URL(API_URL + "limit=60&ts=" + TIME_STAMP + "&apikey=" + API_KEY + "&hash=" + HASH);
             urlConnection = (HttpURLConnection) url.openConnection();
+            int statusCode = urlConnection.getResponseCode();
 
-            ObjectMapper mapper;
-            mapper = new ObjectMapper();
-            JsonNode stateRequest;
+            if (statusCode == 200) {
+                ObjectMapper mapper;
+                mapper = new ObjectMapper();
+                JsonNode stateRequest;
 
-            stateRequest = mapper.readTree(urlConnection.getInputStream());
-            JsonNode data = stateRequest.get("data");
-            JsonNode results = data.get("results");
+                stateRequest = mapper.readTree(urlConnection.getInputStream());
+                JsonNode data = stateRequest.get("data");
+                JsonNode results = data.get("results");
 
-            Iterator<JsonNode> iterator = results.getElements();
+                Iterator<JsonNode> iterator = results.getElements();
 
-            while (iterator.hasNext()) {
-                JsonNode character = iterator.next();
-                characters.add(mapper.readValue(character,Character.class));
+                while (iterator.hasNext()) {
+                    JsonNode character = iterator.next();
+                    characters.add(mapper.readValue(character, Character.class));
+                }
+                result = 1;
+            } else {
+                result = 0;
             }
-            return null;
+
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             urlConnection.disconnect();
         }
-        return null;
+        return result;
     }
 
 
     @SuppressWarnings("ConstantConditions")
-    protected void onPostExecute(String response) {
-        if (response == null) {
-            response = "THERE WAS AN ERROR";
+    protected void onPostExecute(Integer result) {
+        if (result == 1) {
+            context.findViewById(R.id.progressBar).setVisibility(GONE);
+            myAdapter = new MyAdapter(characters);
+            myRecyclerView.addItemDecoration(new DividerItemDecoration(context));
+            myRecyclerView.setAdapter(myAdapter);
         }
-        context.findViewById(R.id.progressBar).setVisibility(GONE);
-        TextView test = (TextView) context.findViewById(R.id.responseView);
-        test.setText(response);
-
-
     }
 
 }
