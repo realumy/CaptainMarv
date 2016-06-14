@@ -2,6 +2,7 @@ package com.example.alainbansais.marvel;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +11,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private ArrayList<Character> data;
-    private Context context;
+    private final List<Character> characterList;
+    private final Context context;
+    ItemClickListener listener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView infoName;
@@ -29,36 +31,41 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         }
     }
 
-    public MyAdapter(ArrayList<Character> myData) {
-        data = myData;
+    public MyAdapter(Context context, List<Character> characterList, ItemClickListener listener) {
+        this.characterList = characterList;
+        this.context = context;
+        this.listener = listener;
     }
 
     @Override
     public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                                   .inflate(R.layout.my_item, parent, false);
-
-        ViewHolder viewHolder = new ViewHolder(view);
+        final ViewHolder viewHolder = new ViewHolder(view);
         viewHolder.img.setClipToOutline(true);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(v,viewHolder.getAdapterPosition());
+            }
+        });
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        context = holder.img.getContext();
-        Character character = data.get(position);
+        Character character = characterList.get(position);
 
-        TextView textView = holder.infoName;
-        textView.setText(character.getNickname());
+        holder.infoName.setText(character.getNickname());
+        holder.infoDescription.setText(character.getDescription());
 
-        TextView textViewDes = holder.infoDescription;
-        textViewDes.setText(character.getDescription());
-        Picasso.with(context).load(data.get(position).getSmallSize()).into(holder.img);
-
+        Picasso.with(context)
+               .load(characterList.get(position).getSmallSize())
+               .into(holder.img);
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return characterList.size();
     }
 }
