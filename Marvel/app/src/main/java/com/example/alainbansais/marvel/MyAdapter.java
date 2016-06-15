@@ -16,7 +16,7 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private final List<Character> characterList;
     private final Context context;
-    ItemClickListener listener;
+    private ItemClickListener listener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView infoName;
