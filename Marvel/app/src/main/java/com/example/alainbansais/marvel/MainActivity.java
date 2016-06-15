@@ -1,12 +1,10 @@
 package com.example.alainbansais.marvel;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -41,7 +39,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         adapter = new MyAdapter(this, listResult, new ItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                Log.d("test", listResult.get(position).toString());
+                Intent intent = new Intent(MainActivity.this, DisplayDetailsActivity.class);
+                final Character value = listResult.get(position);
+                intent.putExtra(DisplayDetailsActivity.CHARACTER_EXTRA, value);
+                startActivity(intent);
             }
         });
         recyclerView.addItemDecoration(new DividerItemDecoration(this));
