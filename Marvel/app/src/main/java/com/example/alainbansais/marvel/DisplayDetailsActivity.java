@@ -33,9 +33,9 @@ public class DisplayDetailsActivity extends AppCompatActivity {
             Display display = getWindowManager().getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
-            int height = size.y;
+            int width = size.x;
             //noinspection ConstantConditions
-            viewTest.getLayoutParams().height = (int) (( ((float)height / 3f))*2);
+            viewTest.getLayoutParams().height = (int) ((((float) width / 3f)) * 2);
             viewTest.requestLayout();
             Picasso.with(this)
                    .load(characterItemParcelable.getBigSize())
