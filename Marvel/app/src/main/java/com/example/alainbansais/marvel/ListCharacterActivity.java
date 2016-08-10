@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -14,17 +18,20 @@ import java.util.List;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class ListCharacterActivity extends AppCompatActivity implements ListCharacterView {
+public class ListCharacterActivity extends AppCompatActivity implements ListCharacterView, TextWatcher {
     private ProgressBar loader;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private ListCharacterPresenter presenter;
+    private EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loader = (ProgressBar) findViewById(R.id.progressBar);
+        editText = (EditText) findViewById(R.id.searchText);
+        editText.addTextChangedListener(this);
         //noinspection ConstantConditions
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         //noinspection ConstantConditions
@@ -73,5 +80,22 @@ public class ListCharacterActivity extends AppCompatActivity implements ListChar
     public void displayError() {
         loader.setVisibility(GONE);
         Toast.makeText(this, "Erreur", Toast.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        presenter.search(s.toString());
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        Log.d("Search is called", s.toString());
+        presenter.search(s.toString());
     }
 }

@@ -9,6 +9,7 @@ public class ListCharacterPresenter {
     private final ListCharacterRepository repository;
     private final Bus bus;
     private final ListCharacterView view;
+    private SearcherService searcherService;
 
     public ListCharacterPresenter(ListCharacterView view) {
         this.view = view;
@@ -37,6 +38,7 @@ public class ListCharacterPresenter {
             view.displayEmptyResult();
         } else {
             view.displayCharacterList(characters);
+            searcherService = new SearcherService(characters);
         }
     }
 
@@ -44,5 +46,10 @@ public class ListCharacterPresenter {
     @Subscribe
     public void onRepositoryError(ListCharacterRunnable.ErrorEvent event) {
         view.displayError();
+    }
+
+    public void search(String pattern){
+        searcherService.search(pattern);
+        view.displayCharacterList(searcherService.result);
     }
 }
